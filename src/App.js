@@ -1,25 +1,16 @@
-import logo from './logo.svg';
-import './App.css';
+import Home from './components/Home';
+import Rsvp from './components/Rsvp';
+
+function getCodigo() {
+  const params = new URLSearchParams(window.location.search);
+  const c = params.get('c');
+  return c ? c.trim() : '';
+}
 
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+  const codigo = getCodigo();
+  if (!codigo) return <Home />;
+  return <Rsvp codigo={codigo} />;
 }
 
 export default App;
