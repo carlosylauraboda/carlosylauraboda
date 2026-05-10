@@ -27,7 +27,7 @@ URL para invitados: `https://<tu-usuario>.github.io/carlosylauraboda/?c=CODIGO`
 ## 2. Crear el repositorio en GitHub
 
 ```bash
-# Renombrar la rama local (el workflow se dispara con 'main').
+# Renombrar la rama local (el workflow se dispara con 'main')
 git branch -M main
 
 # Crear el repo en GitHub (web): https://github.com/new
