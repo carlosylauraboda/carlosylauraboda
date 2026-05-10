@@ -8,7 +8,7 @@ function ensureEndpoint() {
 
 export async function fetchInvitado(codigo) {
   ensureEndpoint();
-  const url = `${ENDPOINT}?c=${encodeURIComponent(codigo)}`;
+  const url = `${ENDPOINT}?codigo=${encodeURIComponent(codigo)}`;
   const res = await fetch(url, { method: 'GET', redirect: 'follow' });
   if (!res.ok) throw new Error('Error de red');
   return res.json();
