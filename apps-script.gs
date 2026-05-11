@@ -77,30 +77,119 @@ function doGet(e) {
   }
 }
 
+// Límites
+var MAX_HIJOS = 4;
+var MAX_NOMBRE_LEN = 80;
+var MAX_COMENTARIOS_LEN = 1000;
+
 function doPost(e) {
-  var data = JSON.parse(e.postData.contents);
-  var codigo = (data && data.codigo ? data.codigo.toString().trim().toUpperCase() : '');
-  if (!codigo) return _json({ result: 'error', message: 'Código requerido' });
-
-  var sheet = _getSheet();
-  var rows = sheet.getRange(1, 1, sheet.getLastRow(), 9).getValues();
-  var filaIndex = -1;
-  for (var i = 0; i < rows.length; i++) {
-    if (rows[i][8] && rows[i][8].toString().trim().toUpperCase() === codigo) {
-      filaIndex = i + 1; break;
+  try {
+    var data;
+    try {
+      data = JSON.parse(e.postData.contents);
+    } catch (err) {
+      return _json({ result: 'error', message: 'JSON inválido' });
     }
-  }
-  if (filaIndex === -1) return _json({ result: 'error', message: 'Código no válido' });
+    if (!data || typeof data !== 'object') {
+      return _json({ result: 'error', message: 'Payload inválido' });
+    }
 
-  var hijos = data.hijos || [];
-  for (var j = 0; j < 4; j++) {
-    sheet.getRange(filaIndex, 3 + j).setValue(hijos[j] || '');
+    var codigo = (data.codigo ? data.codigo.toString().trim().toUpperCase() : '');
+    if (!codigo) return _json({ result: 'error', message: 'Código requerido' });
+    if (codigo.length > 32 || !/^[A-Z0-9_-]+$/.test(codigo)) {
+      return _json({ result: 'error', message: 'Código con formato inválido' });
+    }
+
+    var sheet = _getSheet();
+    var rows = sheet.getRange(1, 1, sheet.getLastRow(), 9).getValues();
+    var filaIndex = -1;
+    var invitado1 = '';
+    var invitado2 = '';
+    for (var i = 0; i < rows.length; i++) {
+      if (rows[i][8] && rows[i][8].toString().trim().toUpperCase() === codigo) {
+        filaIndex = i + 1;
+        invitado1 = (rows[i][0] || '').toString().trim();
+        invitado2 = (rows[i][1] || '').toString().trim();
+        break;
+      }
+    }
+    if (filaIndex === -1) return _json({ result: 'error', message: 'Código no válido' });
+
+    // --- Validaciones ---
+
+    // asistencia: 'Si' | 'No'
+    var asistencia = data.asistencia;
+    if (asistencia !== 'Si' && asistencia !== 'No') {
+      return _json({ result: 'error', message: 'Asistencia inválida' });
+    }
+
+    // hijos: array de strings, máx 4, longitud razonable
+    var hijosIn = Array.isArray(data.hijos) ? data.hijos : [];
+    if (hijosIn.length > MAX_HIJOS) {
+      return _json({ result: 'error', message: 'Demasiados niños (máx ' + MAX_HIJOS + ')' });
+    }
+    var hijos = [];
+    for (var h = 0; h < hijosIn.length; h++) {
+      if (hijosIn[h] == null) { hijos.push(''); continue; }
+      if (typeof hijosIn[h] !== 'string' && typeof hijosIn[h] !== 'number') {
+        return _json({ result: 'error', message: 'Nombre de niño inválido' });
+      }
+      var nombre = hijosIn[h].toString().trim();
+      if (nombre.length > MAX_NOMBRE_LEN) {
+        return _json({ result: 'error', message: 'Nombre de niño demasiado largo' });
+      }
+      hijos.push(nombre);
+    }
+
+    // menusVeganos: entero >= 0, <= total asistentes
+    var adultos = invitado2 ? 2 : 1;
+    var hijosNoVacios = hijos.filter(function (n) { return n && n.length > 0; }).length;
+    var totalAsistentes = adultos + (asistencia === 'Si' ? hijosNoVacios : 0);
+    var menusVeganos = Number(data.menusVeganos);
+    if (!isFinite(menusVeganos) || menusVeganos < 0 || Math.floor(menusVeganos) !== menusVeganos) {
+      return _json({ result: 'error', message: 'menusVeganos inválido' });
+    }
+    if (menusVeganos > totalAsistentes) {
+      return _json({ result: 'error', message: 'menusVeganos (' + menusVeganos + ') excede asistentes (' + totalAsistentes + ')' });
+    }
+
+    // usaBus: 'Si' | 'No' | ''
+    var usaBus = data.usaBus;
+    if (usaBus !== 'Si' && usaBus !== 'No' && usaBus !== '' && usaBus !== undefined && usaBus !== null) {
+      return _json({ result: 'error', message: 'usaBus inválido' });
+    }
+    usaBus = usaBus || '';
+
+    // comentarios: string, longitud máxima
+    var comentarios = data.comentarios;
+    if (comentarios != null && typeof comentarios !== 'string' && typeof comentarios !== 'number') {
+      return _json({ result: 'error', message: 'comentarios inválido' });
+    }
+    comentarios = comentarios != null ? comentarios.toString() : '';
+    if (comentarios.length > MAX_COMENTARIOS_LEN) {
+      return _json({ result: 'error', message: 'Comentarios demasiado largos (máx ' + MAX_COMENTARIOS_LEN + ')' });
+    }
+
+    // Si no asiste, forzamos campos a vacío/cero (defensa en profundidad).
+    if (asistencia === 'No') {
+      hijos = [];
+      menusVeganos = 0;
+      usaBus = '';
+    }
+
+    // --- Escritura ---
+
+    for (var j = 0; j < MAX_HIJOS; j++) {
+      sheet.getRange(filaIndex, 3 + j).setValue(hijos[j] || '');
+    }
+    sheet.getRange(filaIndex, 7).setValue(menusVeganos);
+    sheet.getRange(filaIndex, 8).setValue(usaBus);
+    sheet.getRange(filaIndex, 10).setValue(asistencia === 'Si' ? 'S' : 'N');
+    sheet.getRange(filaIndex, 11).setValue(comentarios);
+    return _json({ result: 'success' });
+  } catch (err) {
+    return _json({ result: 'error', stage: 'doPost', message: String(err), stack: err && err.stack });
   }
-  sheet.getRange(filaIndex, 7).setValue(data.menusVeganos || 0);
-  sheet.getRange(filaIndex, 8).setValue(data.usaBus || '');
-  sheet.getRange(filaIndex, 10).setValue(data.asistencia === 'Si' ? 'S' : 'N');
-  sheet.getRange(filaIndex, 11).setValue(data.comentarios || '');
-  return _json({ result: 'success' });
 }
 
 function _json(obj) {
