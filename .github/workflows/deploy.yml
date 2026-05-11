@@ -4,6 +4,8 @@ on:
   push:
     branches: [master]
   workflow_dispatch:
+  schedule:
+    - cron: '0 4 * * *'
 
 permissions:
   contents: read
@@ -27,6 +29,8 @@ jobs:
       - name: Build
         env:
           REACT_APP_SHEET_ENDPOINT: ${{ secrets.REACT_APP_SHEET_ENDPOINT }}
+          LIST_TOKEN: ${{ secrets.LIST_TOKEN }}
+          SITE_URL: ${{ vars.SITE_URL }}
           CI: false
         run: npm run build
       - name: SPA fallback
