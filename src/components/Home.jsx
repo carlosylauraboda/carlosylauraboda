@@ -8,10 +8,11 @@ const DATE_LABEL = DATE.toLocaleDateString('es-ES', {
   weekday: 'long', day: 'numeric', month: 'long', year: 'numeric',
 }).replace(/^\w/, (c) => c.toUpperCase());
 
+const P = process.env.PUBLIC_URL || '';
 const IMG = {
-  hero: '/photo5.jpeg',
-  intro: '/photo4.jpeg',
-  gallery: ['/photo1.jpeg', '/photo2.jpeg', '/photo3.jpeg', '/photo4.jpeg', '/photo5.jpeg'],
+  hero: `${P}/photo5.jpeg`,
+  intro: `${P}/photo4.jpeg`,
+  gallery: [`${P}/photo1.jpeg`, `${P}/photo2.jpeg`, `${P}/photo3.jpeg`, `${P}/photo4.jpeg`, `${P}/photo5.jpeg`],
 };
 
 function useCountdown(targetDate) {
