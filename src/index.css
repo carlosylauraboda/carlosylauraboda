@@ -2,9 +2,46 @@
 @tailwind components;
 @tailwind utilities;
 
+:root {
+  --cl-olive: #525E3F;
+  --cl-pink: #ED6F94;
+  --cl-orange: #F39200;
+  --cl-cream: #EEE5D8;
+  --cl-sage: #C9D2C6;
+  --cl-ink: #1d1f1a;
+}
+
+html, body { background: #EEE5D8; }
+
 body {
   margin: 0;
-  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  font-family: 'Bricolage Grotesque', 'Inter', system-ui, -apple-system, sans-serif;
+  color: #1d1f1a;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
+
+::selection { background: var(--cl-pink); color: var(--cl-cream); }
+
+@keyframes ticker {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+.animate-ticker { animation: ticker 38s linear infinite; }
+
+.nav-link { position: relative; padding: 4px 0; }
+.nav-link::after {
+  content: "";
+  position: absolute; left: 0; right: 0; bottom: 0;
+  height: 1px; background: var(--cl-pink); transform: scaleX(0);
+  transition: transform .2s;
+}
+.nav-link:hover::after { transform: scaleX(1); }
+
+.faq-a {
+  display: grid; grid-template-rows: 0fr;
+  transition: grid-template-rows .35s ease;
+}
+.faq-a > div { overflow: hidden; }
+.faq-open .faq-a { grid-template-rows: 1fr; }
+.faq-open .faq-plus { transform: rotate(45deg); }
