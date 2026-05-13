@@ -17,7 +17,7 @@ function pageHtml({ codigo, invitado1, invitado2 }) {
   const title = 'Boda de Carlos y Laura';
   const i1 = (invitado1 || '').toString().trim();
   const i2 = (invitado2 || '').toString().trim();
-  const nombres = i1 && i2 ? `${i1} e ${i2}` : i1 || i2 || 'nuestros invitados';
+  const nombres = i1 && i2 ? `${i1} y ${i2}` : i1 || i2 || 'nuestros invitados';
   const desc = `Invitación de ${nombres}`;
   const url = `${SITE_URL}/i/${codigo}/`;
   const target = `${SITE_URL}/?c=${encodeURIComponent(codigo)}`;
