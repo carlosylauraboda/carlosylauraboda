@@ -226,12 +226,12 @@ function Reception() {
       num="02"
       title="Paraíso<br/>al Mar"
       when="A continuación · hasta que el cuerpo aguante"
-      body="Después de la ceremonia, nos vamos al <strong>Paraíso al Mar</strong>: cóctel al fresco, cena larga, sobremesa eterna y barra libre con DJ. Bailes garantizados, gambas también. Trae zapato cómodo en el bolso — Laura ya lo está haciendo."
+      body="Después de la ceremonia, nos vamos al <strong>Paraíso al Mar</strong>: cóctel al fresco, cena larga, sobremesa eterna y barra libre con DJ. Bailes garantizados, gambas también. Trae zapato cómodo en el bolso."
       meta={[
         { lbl: 'Lugar', val: 'Paraíso al Mar<br/>Almerimar, Almería' },
         { lbl: 'Inicio', val: '≈ 19:30 h<br/>Cóctel de bienvenida' },
         { lbl: 'Cena', val: '21:00 h<br/>Menú con opciones' },
-        { lbl: 'Barra libre', val: 'Hasta las 04:00<br/>Resaca opcional' },
+        { lbl: 'Barra libre', val: 'Hasta las 07:00<br/>Resaca opcional' },
       ]}
       mapsUrl="https://maps.app.goo.gl/nxrreqmfAusp7vGdA?g_st=iw"
     />
@@ -376,7 +376,7 @@ const SCHEDULE = [
   { time: '19:00', name: 'Bus hacia el convite', place: 'Dalías → Paraíso al Mar' },
   { time: '19:30', name: 'Cóctel de bienvenida', place: 'Paraíso al Mar · jardín' },
   { time: '21:00', name: 'Cena', place: 'Salón principal' },
-  { time: '23:30', name: 'Baile nupcial y barra libre', place: 'Pista y terraza' },
+  { time: '23:30', name: 'Fiesta', place: 'Pista y terraza' },
   { time: '02:00', name: 'Primer bus de vuelta', place: 'Almerimar / El Ejido' },
   { time: '07:00', name: 'Segundo bus · cierre', place: 'Almerimar / El Ejido' },
 ];
