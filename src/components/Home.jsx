@@ -734,7 +734,6 @@ export default function Home() {
       <Transport />
       <Gallery />
       <Timeline />
-      <DressCode />
       <RsvpSection />
       <FAQ />
       <Footer />
