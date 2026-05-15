@@ -431,180 +431,13 @@ function Choice({ pressed, onClick, variant, children }) {
   );
 }
 
-function RsvpSection() {
-  const [step, setStep] = useState('form');
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
-  const [attending, setAttending] = useState(null);
-  const [guests, setGuests] = useState(1);
-  const [bus, setBus] = useState([]);
-  const [diet, setDiet] = useState('ninguna');
-  const [song, setSong] = useState('');
-  const [note, setNote] = useState('');
-
-  useEffect(() => {
-    try {
-      const raw = localStorage.getItem('cl-rsvp');
-      if (raw) {
-        const v = JSON.parse(raw);
-        setName(v.name || '');
-        setEmail(v.email || '');
-        setAttending(v.attending ?? null);
-        setGuests(v.guests || 1);
-        setBus(v.bus || []);
-        setDiet(v.diet || 'ninguna');
-        setSong(v.song || '');
-        setNote(v.note || '');
-        if (v.submitted) setStep('done');
-      }
-    } catch (e) {}
-  }, []);
-
-  const toggleBus = (k) => setBus(bus.includes(k) ? bus.filter((x) => x !== k) : [...bus, k]);
-
-  const submit = () => {
-    const payload = { name, email, attending, guests, bus, diet, song, note, submitted: true };
-    try { localStorage.setItem('cl-rsvp', JSON.stringify(payload)); } catch (e) {}
-    setStep('done');
-  };
-
-  const reset = () => {
-    try { localStorage.removeItem('cl-rsvp'); } catch (e) {}
-    setStep('form'); setAttending(null); setName(''); setEmail(''); setGuests(1);
-    setBus([]); setDiet('ninguna'); setSong(''); setNote('');
-  };
-
-  const canSubmit = name.trim().length > 1 && attending !== null;
-
-  return (
-    <section id="rsvp" className="bg-pink text-cream py-28 relative overflow-hidden">
-      <div className="max-w-[1280px] mx-auto px-8">
-        <div className="grid md:grid-cols-[0.8fr_1.2fr] gap-16 items-start">
-          <div>
-            <span className="font-mono text-[12px] tracking-[0.18em] uppercase text-cream/80">— Confirmar asistencia</span>
-            <h2 className="font-serif italic font-normal leading-[0.86] mt-3"
-                style={{ fontSize: 'clamp(80px, 10vw, 160px)' }}>
-              Dinos<br/>si vienes.
-            </h2>
-            <p className="mt-6 max-w-[36ch] text-[17px] leading-[1.55] text-cream/90">
-              Antes del <strong>15 de mayo</strong>, por favor. Te confirmamos por email todos los detalles unos días antes.
-            </p>
-          </div>
-
-          {step === 'form' ? (
-            <div className="bg-cream text-ink p-8 md:p-10 rounded-[4px]">
-              <div className="flex justify-between items-baseline mb-6 font-mono text-[11px] tracking-[0.2em] uppercase text-ink/60">
-                <span>Formulario</span><span>Tarda 30 segundos</span>
-              </div>
-
-              <Field label="Tu nombre y apellido">
-                <input value={name} onChange={(e) => setName(e.target.value)} placeholder="María Sánchez"
-                       className="bg-transparent border-0 border-b border-ink/20 py-2 text-[18px] outline-none focus:border-pink transition" />
-              </Field>
-
-              <Field label="Email (para mandarte los últimos detalles)">
-                <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="hola@ejemplo.com"
-                       className="bg-transparent border-0 border-b border-ink/20 py-2 text-[18px] outline-none focus:border-pink transition" />
-              </Field>
-
-              <Field label="¿Vienes?">
-                <div className="flex gap-2.5 flex-wrap mt-1">
-                  <Choice pressed={attending === 'yes'} onClick={() => setAttending('yes')} variant="yes">
-                    Sí, allí estaré
-                  </Choice>
-                  <Choice pressed={attending === 'no'} onClick={() => setAttending('no')} variant="no">
-                    No puedo
-                  </Choice>
-                </div>
-              </Field>
-
-              {attending === 'yes' && (
-                <>
-                  <Field label="¿Cuántos sois en total? (incluyéndote)">
-                    <div className="inline-flex items-center border border-ink/20 rounded-full overflow-hidden">
-                      <button type="button" onClick={() => setGuests(Math.max(1, guests - 1))} className="w-9 h-9 hover:bg-ink/5">−</button>
-                      <span className="font-mono text-[14px] min-w-[36px] text-center">{guests}</span>
-                      <button type="button" onClick={() => setGuests(Math.min(8, guests + 1))} className="w-9 h-9 hover:bg-ink/5">+</button>
-                    </div>
-                  </Field>
-
-                  <Field label="¿Usarás el bus?">
-                    <div className="flex gap-2.5 flex-wrap mt-1">
-                      {[
-                        ['ida-almerimar', 'Ida desde Almerimar'],
-                        ['ida-ejido', 'Ida desde El Ejido'],
-                        ['enlace', 'Iglesia → Convite'],
-                        ['vuelta-02', 'Vuelta a las 02:00'],
-                        ['vuelta-04', 'Vuelta a las 04:00'],
-                      ].map(([k, lbl]) => (
-                        <Choice key={k} pressed={bus.includes(k)} onClick={() => toggleBus(k)}>{lbl}</Choice>
-                      ))}
-                    </div>
-                  </Field>
-
-                  <Field label="Alergias / dieta">
-                    <select value={diet} onChange={(e) => setDiet(e.target.value)}
-                            className="bg-transparent border-0 border-b border-ink/20 py-2 text-[18px] outline-none focus:border-pink transition">
-                      <option value="ninguna">Ninguna · como de todo</option>
-                      <option>Vegetariano</option>
-                      <option>Vegano</option>
-                      <option>Sin gluten</option>
-                      <option>Sin lactosa</option>
-                      <option>Otra (indícalo abajo)</option>
-                    </select>
-                  </Field>
-
-                  <Field label="Una canción que no puede faltar">
-                    <input value={song} onChange={(e) => setSong(e.target.value)} placeholder="Artista — título"
-                           className="bg-transparent border-0 border-b border-ink/20 py-2 text-[18px] outline-none focus:border-pink transition" />
-                  </Field>
-                </>
-              )}
-
-              <Field label="Algo más que debamos saber">
-                <textarea value={note} onChange={(e) => setNote(e.target.value)} rows={2}
-                          className="bg-transparent border-0 border-b border-ink/20 py-2 text-[18px] outline-none focus:border-pink transition resize-y min-h-[72px]" />
-              </Field>
-
-              <button
-                type="button"
-                disabled={!canSubmit}
-                onClick={submit}
-                className="mt-6 w-full py-[18px] bg-ink text-cream rounded-full font-mono text-[12px] tracking-[0.2em] uppercase transition hover:bg-olive-deep disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                Enviar respuesta →
-              </button>
-            </div>
-          ) : (
-            <div className="bg-cream text-ink py-14 px-12 rounded-[4px] text-center">
-              <div className="w-14 h-14 rounded-full bg-olive text-cream inline-flex items-center justify-center text-[28px] mb-6">✓</div>
-              <h3 className="font-serif italic text-[48px] m-0 mb-3 text-olive-deep">
-                {attending === 'yes' ? '¡Nos vemos!' : '¡Te echaremos de menos!'}
-              </h3>
-              <p className="text-[17px] leading-[1.55] text-ink/75 max-w-[44ch] mx-auto">
-                {attending === 'yes'
-                  ? `Apuntada tu confirmación, ${name.split(' ')[0]}. Te escribimos unos días antes con los últimos detalles. Si necesitas cambiar algo, dale al botón.`
-                  : `Gracias por avisar, ${name.split(' ')[0]}. Brindaremos por ti. Si cambia el plan, puedes actualizar tu respuesta.`}
-              </p>
-              <button type="button" onClick={reset} className="mt-7 font-mono text-[11px] tracking-[0.18em] uppercase underline underline-offset-4 decoration-pink">
-                Editar mi respuesta
-              </button>
-            </div>
-          )}
-        </div>
-      </div>
-    </section>
-  );
-}
-
 const FAQS = [
-  { q: '¿Puedo llevar acompañante?', a: 'Sí, si vuestra invitación lo incluye. En el formulario de RSVP podrás indicar cuántos sois.' },
+  { q: '¿Puedo llevar acompañante?', a: 'Sí, si vuestra invitación lo incluye. En el formulario de asistencia podrás indicar cuántos sois.' },
   { q: '¿Hay sitio para dejar a los niños?', a: 'La ceremonia y el convite son aptos para peques, pero no hemos preparado canguro en el sitio. Si vienes con niños, avísanos en las notas del RSVP.' },
   { q: '¿Dónde puedo dormir?', a: 'Te recomendamos Almerimar (a 15 min en coche del convite) o El Ejido. Hay hoteles para todos los bolsillos. El bus de vuelta sale desde el Paraíso al Mar a las 02:00 y a las 04:00.' },
   { q: '¿Hay aparcamiento en la iglesia?', a: 'Plazas limitadas en las calles del centro de Dalías. Lo más cómodo es venir en el autobús que sale de Almerimar y El Ejido.' },
   { q: '¿Habrá menú especial para alergias?', a: 'Sí. Tenemos opciones vegetarianas, veganas, sin gluten y sin lactosa. Indícalo en el RSVP antes del 15 de mayo.' },
   { q: '¿Cuándo cierra la fiesta?', a: 'A las 04:00 sale el último bus desde Paraíso al Mar. Si te quedas más, tendrás que organizarte la vuelta.' },
-  { q: '¿Tenéis lista de regalos?', a: 'No queremos regalos, pero si te apetece ayudarnos con la luna de miel, te damos los datos en la confirmación que enviamos por email.' },
 ];
 
 function FAQ() {
@@ -620,7 +453,7 @@ function FAQ() {
               Por si te queda<br/>alguna duda.
             </h2>
           </div>
-          <p className="text-ink/70 max-w-[32ch]">¿No la encuentras? Escríbenos a <a className="underline decoration-pink" href="mailto:hola@carlosylaura.es">hola@carlosylaura.es</a></p>
+          <p className="text-ink/70 max-w-[32ch]">¿No la encuentras? Escríbenos a nuestro WhatsApp</p>
         </div>
         <div className="border-t border-olive/30">
           {FAQS.map((f, i) => {
@@ -660,7 +493,6 @@ function Footer() {
         <div className="flex flex-col sm:flex-row justify-between sm:items-baseline mt-14 pt-6 border-t border-cream/20 gap-4 font-mono text-[10px] tracking-[0.2em] uppercase text-cream/60">
           <span>© 2026 · Carlos y Laura</span>
           <span>Dalías · Almerimar · El Ejido</span>
-          <a href="mailto:hola@carlosylaura.es" className="hover:text-cream">hola@carlosylaura.es</a>
         </div>
       </div>
     </footer>
