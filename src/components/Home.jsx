@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 
-const WEDDING_DATE_ISO = '2026-06-13T18:00:00+02:00';
+const WEDDING_DATE_ISO = '2026-08-29T18:00:00+02:00';
 const WEDDING_LOCATION = 'Dalías · Almerimar';
 
 const DATE = new Date(WEDDING_DATE_ISO);
