@@ -76,17 +76,10 @@ function Hero({ dateStr, location }) {
                 <div className="font-mono text-[10px] tracking-[0.18em] uppercase text-olive/80 mb-1">Lugar</div>
                 <div className="text-[18px]">{location}</div>
               </div>
-              <div>
-                <div className="font-mono text-[10px] tracking-[0.18em] uppercase text-olive/80 mb-1">Dress code</div>
-                <div className="text-[18px]">Color, mucho color</div>
-              </div>
             </div>
           </div>
 
           <div className="relative aspect-[4/5] bg-sage overflow-hidden rounded-[4px]">
-            <div className="absolute top-[18px] right-[18px] bg-orange text-ink font-mono text-[10px] tracking-[0.2em] uppercase px-[11px] py-[7px] rounded-full z-10">
-              Save the date
-            </div>
             <img src={IMG.hero} alt="Carlos y Laura" className="w-full h-full object-cover" />
           </div>
         </div>
@@ -98,7 +91,7 @@ function Hero({ dateStr, location }) {
                 <span className="px-6">Carlos &amp; Laura</span><span className="px-6 text-pink">●</span>
                 <span className="px-6">Sí, quiero</span><span className="px-6 text-pink">●</span>
                 <span className="px-6">Dalías · Almerimar · El Ejido</span><span className="px-6 text-pink">●</span>
-                <span className="px-6">Una tarde de junio</span><span className="px-6 text-pink">●</span>
+                <span className="px-6">Una tarde de Agosto</span><span className="px-6 text-pink">●</span>
               </span>
             ))}
           </div>
@@ -215,7 +208,7 @@ function Ceremony() {
       body="Nos daremos el «sí, quiero» en la <strong>Parroquia de Dalías</strong>, en pleno centro del pueblo. Una iglesia preciosa en un pueblo blanco de la sierra de Gádor. Te recomendamos llegar quince minutos antes — el sitio no es enorme y queremos veros bien colocados antes de que entre Laura."
       meta={[
         { lbl: 'Lugar', val: 'Parroquia de Dalías<br/>Plaza de la Iglesia<br/>04750 Dalías, Almería' },
-        { lbl: 'Hora', val: '18:00 h<br/>Sábado 13 de junio' },
+        { lbl: 'Hora', val: '18:00 h<br/>Sábado 29 de Agosto' },
         { lbl: 'Aparcamiento', val: 'Plazas en las calles colindantes. Mejor venir en el bus.' },
         { lbl: 'Duración', val: '≈ 45 minutos' },
       ]}
@@ -385,7 +378,7 @@ const SCHEDULE = [
   { time: '21:00', name: 'Cena', place: 'Salón principal' },
   { time: '23:30', name: 'Baile nupcial y barra libre', place: 'Pista y terraza' },
   { time: '02:00', name: 'Primer bus de vuelta', place: 'Almerimar / El Ejido' },
-  { time: '04:00', name: 'Segundo bus · cierre', place: 'Almerimar / El Ejido' },
+  { time: '07:00', name: 'Segundo bus · cierre', place: 'Almerimar / El Ejido' },
 ];
 
 function Timeline() {
@@ -407,50 +400,6 @@ function Timeline() {
               <div className="font-mono text-[10px] md:text-[11px] tracking-[0.18em] uppercase text-cream/65 col-start-2 md:col-start-3">{row.place}</div>
             </div>
           ))}
-        </div>
-      </div>
-    </section>
-  );
-}
-
-function DressCode() {
-  const swatches = [
-    { c: 'bg-olive', t: 'Oliva', dark: true },
-    { c: 'bg-sage', t: 'Salvia', dark: false },
-    { c: 'bg-orange', t: 'Naranja', dark: false },
-    { c: 'bg-pink', t: 'Rosa', dark: true },
-    { c: 'bg-cream border border-ink/10', t: 'Crema', dark: false },
-  ];
-  return (
-    <section className="bg-cream py-28">
-      <div className="max-w-[1280px] mx-auto px-8">
-        <div className="grid md:grid-cols-2 gap-16 items-center">
-          <div>
-            <span className="font-mono text-[12px] tracking-[0.18em] uppercase text-pink">— Cómo vestir</span>
-            <h2 className="font-serif italic font-normal text-olive-deep leading-[0.95] mt-3 mb-6"
-                style={{ fontSize: 'clamp(56px, 7vw, 104px)' }}>
-              Color, alegría<br/>y un toque atrevido.
-            </h2>
-            <p className="text-[19px] leading-[1.6] text-ink/80 max-w-[50ch]">
-              No hace falta que vengas de etiqueta. Sí pedimos que <strong>te sumes a la paleta</strong>: oliva, salvia, naranja, rosa, crema. Nada de blanco entero (eso lo guardamos para Laura) ni de negro luto. Atrévete con un traje en color, una camisa florida o unos pendientes imposibles.
-            </p>
-            <div className="flex gap-3 mt-8">
-              {swatches.map((sw, i) => (
-                <div key={i} className={`w-20 h-32 rounded-[4px] flex flex-col justify-end p-3 font-mono text-[9px] tracking-[0.15em] uppercase ${sw.c} ${sw.dark ? 'text-cream' : 'text-ink'}`}>
-                  {sw.t}
-                </div>
-              ))}
-            </div>
-          </div>
-          <div className="bg-orange text-ink p-12 rounded-[4px] relative">
-            <div className="absolute -top-3.5 left-8 bg-ink text-cream font-mono text-[10px] tracking-[0.2em] uppercase px-3 py-1.5 rounded-full">
-              Nota de los novios
-            </div>
-            <p className="font-serif italic text-[32px] leading-[1.2] mt-2 mb-[18px]">
-              «Más vale pasarse de color que quedarse corto. Esta boda no se repite.»
-            </p>
-            <div className="font-mono text-[11px] tracking-[0.18em] uppercase">— Carlos &amp; Laura</div>
-          </div>
         </div>
       </div>
     </section>
