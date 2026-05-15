@@ -45,10 +45,6 @@ function Nav() {
           <a href="#agenda" className="nav-link hover:text-ink">Agenda</a>
           <a href="#faq" className="nav-link hover:text-ink">FAQ</a>
         </div>
-        <a href="#rsvp" className="font-mono text-[10px] md:text-[11px] tracking-[0.16em] uppercase px-3.5 md:px-[14px] py-[9px] rounded-full bg-ink text-cream hover:bg-pink transition whitespace-nowrap shrink-0">
-          <span className="hidden sm:inline">Confirmar asistencia</span>
-          <span className="sm:hidden">RSVP</span>
-        </a>
       </div>
     </nav>
   );
@@ -734,7 +730,6 @@ export default function Home() {
       <Transport />
       <Gallery />
       <Timeline />
-      <RsvpSection />
       <FAQ />
       <Footer />
     </div>
