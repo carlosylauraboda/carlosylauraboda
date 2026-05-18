@@ -14,7 +14,7 @@ function HomeLink({ className = '' }) {
     <div className={`text-center ${className}`}>
       <a
         href={HOME_URL}
-        className="inline-flex items-center gap-1.5 font-mono text-[11px] tracking-[0.16em] uppercase text-boda-ink/70 hover:text-boda-ink"
+        className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full border border-boda-ink/30 font-mono text-[11px] tracking-[0.16em] uppercase text-boda-ink/70 hover:text-boda-ink hover:border-boda-ink transition"
       >
         <span aria-hidden="true">←</span>
         <span>Ver detalles del evento</span>
