@@ -30,14 +30,21 @@ function useCountdown(targetDate) {
   };
 }
 
+function getRsvpCodigoFromCookie() {
+  const match = document.cookie.match(/(?:^|;\s*)rsvp_codigo=([^;]+)/);
+  return match ? decodeURIComponent(match[1]) : '';
+}
+
 function Nav() {
+  const codigo = getRsvpCodigoFromCookie();
+  const rsvpHref = codigo ? `${window.location.pathname}?c=${encodeURIComponent(codigo)}` : '';
   return (
     <nav className="sticky top-0 z-50 bg-cream/95 backdrop-blur border-b border-olive/20">
       <div className="flex items-center justify-between h-[60px] px-5 md:px-7 gap-4">
         <a href="#top" className="font-serif italic text-[22px] md:text-[28px] leading-none text-olive-deep whitespace-nowrap shrink-0">
           Carlos <span className="text-pink">&amp;</span> Laura
         </a>
-        <div className="hidden lg:flex gap-7 font-mono text-[11px] tracking-[0.16em] uppercase text-ink/70">
+        <div className="hidden lg:flex gap-7 font-mono text-[11px] tracking-[0.16em] uppercase text-ink/70 items-center">
           <a href="#historia" className="nav-link hover:text-ink">Historia</a>
           <a href="#ceremonia" className="nav-link hover:text-ink">Ceremonia</a>
           <a href="#convite" className="nav-link hover:text-ink">Convite</a>
@@ -45,6 +52,14 @@ function Nav() {
           <a href="#agenda" className="nav-link hover:text-ink">Agenda</a>
           <a href="#faq" className="nav-link hover:text-ink">FAQ</a>
         </div>
+        {codigo && (
+          <a
+            href={rsvpHref}
+            className="font-mono text-[11px] tracking-[0.16em] uppercase px-4 py-2 rounded-full border border-ink/30 text-ink hover:bg-ink hover:text-cream transition shrink-0"
+          >
+            Editar mi confirmación
+          </a>
+        )}
       </div>
     </nav>
   );

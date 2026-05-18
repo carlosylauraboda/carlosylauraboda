@@ -2,10 +2,32 @@ import { useEffect, useMemo, useState } from 'react';
 import { fetchInvitado, submitRsvp } from '../api/sheet';
 import RsvpForm from './RsvpForm';
 
+const HOME_URL = window.location.pathname;
+
+function setCodigoCookie(codigo) {
+  const oneYear = 60 * 60 * 24 * 365;
+  document.cookie = `rsvp_codigo=${encodeURIComponent(codigo)}; max-age=${oneYear}; path=/; SameSite=Lax`;
+}
+
+function HomeLink({ className = '' }) {
+  return (
+    <div className={`text-center ${className}`}>
+      <a
+        href={HOME_URL}
+        className="inline-flex items-center gap-1.5 font-mono text-[11px] tracking-[0.16em] uppercase text-boda-ink/70 hover:text-boda-ink"
+      >
+        <span aria-hidden="true">←</span>
+        <span>Ver detalles del evento</span>
+      </a>
+    </div>
+  );
+}
+
 function Card({ children }) {
   return (
     <div className="min-h-screen bg-boda-cream text-boda-ink py-10 px-4">
       <div className="mx-auto max-w-xl bg-white rounded-2xl shadow-lg p-6 sm:p-10">
+        <HomeLink className="mb-6" />
         {children}
       </div>
     </div>
@@ -34,6 +56,10 @@ export default function Rsvp({ codigo }) {
   const [submitting, setSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState('');
   const [editing, setEditing] = useState(false);
+
+  useEffect(() => {
+    setCodigoCookie(codigo);
+  }, [codigo]);
 
   useEffect(() => {
     let alive = true;
@@ -118,18 +144,8 @@ export default function Rsvp({ codigo }) {
     try {
       const res = await submitRsvp({ codigo, ...formData });
       if (res.result === 'success') {
-        setState({
-          status: 'ready',
-          invitado: {
-            ...invitado,
-            confirmado: formData.asistencia === 'Si' ? 'S' : 'N',
-            hijos: formData.hijos,
-            menusVeganos: formData.menusVeganos,
-            usaBus: formData.usaBus,
-            comentarios: formData.comentarios,
-          },
-        });
-        setEditing(false);
+        window.location.href = HOME_URL;
+        return;
       } else {
         setSubmitError(res.message || 'No se pudo guardar la respuesta');
       }
